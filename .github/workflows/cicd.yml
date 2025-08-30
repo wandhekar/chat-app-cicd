@@ -10,6 +10,10 @@ env:
   IMAGE_NAME: chat-app
   IMAGE_TAG: ${{ github.sha }}
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   # Job 1: Test the application
   test:
