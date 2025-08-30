@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     name: 🐳 Build Docker Image
     needs: test
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'pull_request' && github.ref == 'refs/heads/main'
     
     steps:
     - name: 📥 Checkout Code
@@ -80,7 +80,7 @@ jobs:
     runs-on: ubuntu-latest
     name: 🚀 Deploy Application
     needs: [test, build]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'pull_request' && github.ref == 'refs/heads/main'
     
     steps:
     - name: 📥 Checkout Code
@@ -96,7 +96,8 @@ jobs:
         
     - name: 💬 Add Deployment Comment
       uses: actions/github-script@v7
-      if: github.event_name == 'push'
+      if: github.event_name == 'pull_request'
+
       with:
         script: |
           github.rest.repos.createCommitComment({
@@ -123,8 +124,8 @@ jobs:
     runs-on: ubuntu-latest
     name: 🔒 Security Scan
     needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    
+    if: github.event_name == 'pull_request' && github.ref == 'refs/heads/main'
+
     steps:
     - name: 📥 Checkout Code
       uses: actions/checkout@v4
