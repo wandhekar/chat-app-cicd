@@ -2,7 +2,7 @@ name: Chat App CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, develop, feature/initial-setup ]  # Added feature branch for testing ]
+    branches: [ main, develop, feature/* ]  # Added feature branch for testing
   pull_request:
     branches: [ main ]
 
