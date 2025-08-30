@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-app-deployment
+  labels:
+    app: chat-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: chat-app
+  template:
+    metadata:
+      labels:
+        app: chat-app
+    spec:
+      containers:
+      - name: chat-app
+        image: chat-app:latest
+        imagePullPolicy: Never  # Use local image built with Docker
+        ports:
+        - containerPort: 8501
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: OLLAMA_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: chat-app-config
+              key: OLLAMA_HOST
+        # Resource limits (optional but good practice)
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        # Health checks
+        livenessProbe:
+          httpGet:
+            path: /_stcore/health
+            port: 8501
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /_stcore/health
+            port: 8501
+          initialDelaySeconds: 10
+          periodSeconds: 5
